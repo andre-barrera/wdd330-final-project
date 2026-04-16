@@ -10,41 +10,63 @@ const saveBtn = document.querySelector("#saveBtn");
 
 let currentGame;
 
+/* ✅ CLEAN DESCRIPTION HANDLER */
+function getDescription(game) {
+  if (game.description_raw) return game.description_raw;
+
+  if (game.description) {
+    return game.description.replace(/<[^>]*>/g, ""); // remove HTML tags
+  }
+
+  return "No description available.";
+}
+
+/* 🚀 MAIN INIT */
 async function init() {
   try {
+    /* 🎮 GET GAME */
     const game = await getGameById(id);
     currentGame = game;
 
     container.innerHTML = `
-      <h1>${game.name}</h1>
+      <h1>${game.name || "Unknown Game"}</h1>
       <img src="${game.background_image || ""}" />
-      <p>${game.description_raw || "No description available."}</p>
+      <p>${getDescription(game)}</p>
     `;
 
+    /* 💰 GET DEALS + STORES */
     const deals = await getDeals(game.name);
     const stores = await getStores();
 
-    dealsContainer.innerHTML =
-      deals && deals.length > 0
-        ? deals.slice(0, 5).map(d => {
+    if (!deals || deals.length === 0) {
+      dealsContainer.innerHTML = "<p>No deals found</p>";
+      return;
+    }
 
-            const store = stores.find(s => s.storeID === d.storeID);
+    dealsContainer.innerHTML = deals
+      .slice(0, 5)
+      .map((d) => {
+        /* ✅ FIX: storeID types MUST match */
+        const store = stores.find(
+          (s) => Number(s.storeID) === Number(d.storeID)
+        );
 
-            return `
-              <div class="deal-card glass">
-                <p><strong>💰 $${d.salePrice}</strong></p>
-                <p class="original-price">$${d.normalPrice}</p>
-                <p>Discount: ${Math.round(d.savings)}%</p>
+        return `
+          <div class="deal-card glass">
+            <p><strong>💰 $${d.salePrice}</strong></p>
+            <p class="original-price">$${d.normalPrice}</p>
+            <p>Discount: ${Math.round(d.savings)}%</p>
 
-                <p>🏪 ${store ? store.storeName : "Unknown Store"}</p>
+            <p>🏪 ${store ? store.storeName : "Unknown Store"}</p>
 
-                <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" target="_blank">
-                  🔗 View Deal
-                </a>
-              </div>
-            `;
-          }).join("")
-        : "<p>No deals found</p>";
+            <a href="https://www.cheapshark.com/redirect?dealID=${d.dealID}" 
+               target="_blank">
+              🔗 View Deal
+            </a>
+          </div>
+        `;
+      })
+      .join("");
 
   } catch (err) {
     console.error("❌ Error loading game:", err);
@@ -52,6 +74,7 @@ async function init() {
   }
 }
 
+/* ⭐ SAVE FAVORITE */
 if (saveBtn) {
   saveBtn.addEventListener("click", () => {
     if (currentGame) {
@@ -61,4 +84,5 @@ if (saveBtn) {
   });
 }
 
+/* 🚀 START */
 init();

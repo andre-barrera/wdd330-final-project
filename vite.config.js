@@ -1,8 +1,16 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
+import { resolve } from "path";
 
 export default defineConfig({
-  base: "./", 
+  base: "./",
   build: {
-    outDir: "dist"
+    outDir: "dist",
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        game: resolve(__dirname, "game_details/index.html"),
+        favorites: resolve(__dirname, "favorites/index.html")
+      }
+    }
   }
 });

@@ -1,6 +1,12 @@
 import { searchGames, getPopularGames, getTopGame } from "./ExternalServices.mjs";
 import { renderGameList } from "./GameList.mjs";
 
+/* 🔗 CENTRALIZED NAVIGATION */
+function goToGameDetails(id) {
+  window.location.href = "/game_details/index.html?id=" + id;
+}
+
+/* 🔹 LOAD HEADER */
 async function loadHeader() {
   try {
     const res = await fetch("/partials/header.html");
@@ -17,7 +23,9 @@ async function loadHeader() {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const query = document.querySelector("#searchInput").value;
+      const query = document.querySelector("#searchInput").value.trim();
+
+      if (!query) return;
 
       console.log("🔍 Searching for:", query);
 
@@ -27,7 +35,7 @@ async function loadHeader() {
         console.log("🎮 Games received:", games);
 
         renderGameList(games);
-    
+
         document.querySelector("#results").scrollIntoView({
           behavior: "smooth"
         });
@@ -42,14 +50,15 @@ async function loadHeader() {
   }
 }
 
+/* 🔹 HERO */
 async function loadHero() {
   try {
     const game = await getTopGame();
 
+    if (!game) return;
+
     const heroImage = document.querySelector(".hero-image");
     const heroText = document.querySelector(".hero-text");
-
-    if (!game) return;
 
     heroImage.style.backgroundImage = `url(${game.background_image})`;
     heroImage.style.backgroundSize = "cover";
@@ -58,15 +67,19 @@ async function loadHero() {
     heroText.innerHTML = `
       <h2>${game.name}</h2>
       <p>${game.released || "Release date unavailable"}</p>
-      <button onclick="window.location.href='/game_details/index.html?id=${game.id}'">
-        View Game
-      </button>
+      <button id="heroBtn">View Game</button>
     `;
+
+    document.querySelector("#heroBtn").addEventListener("click", () => {
+      goToGameDetails(game.id);
+    });
+
   } catch (err) {
     console.error("❌ Hero failed:", err);
   }
 }
 
+/* 🔹 FEATURED */
 async function loadFeatured() {
   try {
     const games = await getPopularGames();
@@ -88,7 +101,7 @@ async function loadFeatured() {
       `;
 
       div.addEventListener("click", () => {
-        window.location.href = `/game_details/index.html?id=${game.id}`;
+        goToGameDetails(game.id);
       });
 
       container.appendChild(div);
@@ -99,8 +112,9 @@ async function loadFeatured() {
   }
 }
 
+/* 🚀 INIT */
 async function init() {
-  await loadHeader();   
+  await loadHeader();
   loadHero();
   loadFeatured();
 }

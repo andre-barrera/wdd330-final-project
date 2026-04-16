@@ -1,5 +1,10 @@
 import { renderStars } from "./utils.mjs";
 
+/* 🔗 CENTRALIZED NAVIGATION */
+function goToGameDetails(id) {
+  window.location.href = "/game_details/index.html?id=" + id;
+}
+
 export function renderGameList(games) {
   const container = document.querySelector("#results");
 
@@ -25,7 +30,7 @@ export function renderGameList(games) {
     `;
 
     div.addEventListener("click", () => {
-      window.location.href = `/src/game_details/index.html?id=${game.id}`;
+      goToGameDetails(game.id);
     });
 
     container.appendChild(div);
