@@ -1,6 +1,5 @@
 import { renderStars } from "./utils.mjs";
 
-/* 🔗 CENTRALIZED NAVIGATION */
 function goToGameDetails(id) {
   window.location.href = "/game_details/index.html?id=" + id;
 }

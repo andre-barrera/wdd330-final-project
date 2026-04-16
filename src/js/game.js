@@ -10,7 +10,6 @@ const saveBtn = document.querySelector("#saveBtn");
 
 let currentGame;
 
-/* ✅ CLEAN DESCRIPTION HANDLER */
 function getDescription(game) {
   if (game.description_raw) return game.description_raw;
 
@@ -21,10 +20,8 @@ function getDescription(game) {
   return "No description available.";
 }
 
-/* 🚀 MAIN INIT */
 async function init() {
   try {
-    /* 🎮 GET GAME */
     const game = await getGameById(id);
     currentGame = game;
 
@@ -34,7 +31,6 @@ async function init() {
       <p>${getDescription(game)}</p>
     `;
 
-    /* 💰 GET DEALS + STORES */
     const deals = await getDeals(game.name);
     const stores = await getStores();
 
@@ -46,7 +42,6 @@ async function init() {
     dealsContainer.innerHTML = deals
       .slice(0, 5)
       .map((d) => {
-        /* ✅ FIX: storeID types MUST match */
         const store = stores.find(
           (s) => Number(s.storeID) === Number(d.storeID)
         );
@@ -74,7 +69,6 @@ async function init() {
   }
 }
 
-/* ⭐ SAVE FAVORITE */
 if (saveBtn) {
   saveBtn.addEventListener("click", () => {
     if (currentGame) {
@@ -84,5 +78,4 @@ if (saveBtn) {
   });
 }
 
-/* 🚀 START */
 init();

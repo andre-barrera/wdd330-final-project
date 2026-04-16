@@ -1,12 +1,10 @@
 import { searchGames, getPopularGames, getTopGame } from "./ExternalServices.mjs";
 import { renderGameList } from "./GameList.mjs";
 
-/* 🔗 CENTRALIZED NAVIGATION */
 function goToGameDetails(id) {
   window.location.href = "/game_details/index.html?id=" + id;
 }
 
-/* 🔹 LOAD HEADER */
 async function loadHeader() {
   try {
     const res = await fetch("/partials/header.html");
@@ -50,7 +48,6 @@ async function loadHeader() {
   }
 }
 
-/* 🔹 HERO */
 async function loadHero() {
   try {
     const game = await getTopGame();
@@ -79,7 +76,6 @@ async function loadHero() {
   }
 }
 
-/* 🔹 FEATURED */
 async function loadFeatured() {
   try {
     const games = await getPopularGames();
@@ -112,7 +108,6 @@ async function loadFeatured() {
   }
 }
 
-/* 🚀 INIT */
 async function init() {
   await loadHeader();
   loadHero();
