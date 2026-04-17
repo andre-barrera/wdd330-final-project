@@ -1,8 +1,61 @@
 import { searchGames, getPopularGames, getTopGame } from "./ExternalServices.mjs";
 import { renderGameList } from "./GameList.mjs";
 
+let currentGames = [];
+
 function goToGameDetails(id) {
   window.location.href = "/game_details/index.html?id=" + id;
+}
+
+function sortGames(games, type) {
+  if (type === "rating") {
+    return [...games].sort((a, b) => b.rating - a.rating);
+  }
+
+  if (type === "name") {
+    return [...games].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }
+
+  return games;
+}
+
+function filterGames(games, text) {
+  return games.filter(game =>
+    game.name.toLowerCase().includes(text.toLowerCase())
+  );
+}
+
+function setupControls() {
+  const sortSelect = document.querySelector("#sortSelect");
+  const filterInput = document.querySelector("#filterInput");
+  const form = document.querySelector("#controlsForm");
+
+  if (!sortSelect || !filterInput) {
+    console.error("❌ Controls not found");
+    return;
+  }
+
+  function applyFilters() {
+    let updated = [...currentGames];
+
+    updated = filterGames(updated, filterInput.value);
+    updated = sortGames(updated, sortSelect.value);
+
+    renderGameList(updated);
+  }
+
+  sortSelect.addEventListener("change", applyFilters);
+
+  filterInput.addEventListener("input", applyFilters);
+
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      applyFilters();
+    });
+  }
 }
 
 async function loadHeader() {
@@ -22,17 +75,14 @@ async function loadHeader() {
       e.preventDefault();
 
       const query = document.querySelector("#searchInput").value.trim();
-
       if (!query) return;
-
-      console.log("🔍 Searching for:", query);
 
       try {
         const games = await searchGames(query);
 
-        console.log("🎮 Games received:", games);
+        currentGames = games;
 
-        renderGameList(games);
+        renderGameList(currentGames);
 
         document.querySelector("#results").scrollIntoView({
           behavior: "smooth"
@@ -51,7 +101,6 @@ async function loadHeader() {
 async function loadHero() {
   try {
     const game = await getTopGame();
-
     if (!game) return;
 
     const heroImage = document.querySelector(".hero-image");
@@ -112,6 +161,7 @@ async function init() {
   await loadHeader();
   loadHero();
   loadFeatured();
+  setupControls();
 }
 
 init();

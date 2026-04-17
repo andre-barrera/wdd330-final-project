@@ -1,16 +1,9 @@
 import { renderStars } from "./utils.mjs";
 
-function goToGameDetails(id) {
-  window.location.href = "/game_details/index.html?id=" + id;
-}
-
 export function renderGameList(games) {
   const container = document.querySelector("#results");
 
-  if (!container) {
-    console.error("❌ #results container not found");
-    return;
-  }
+  if (!container) return;
 
   container.innerHTML = "";
 
@@ -29,7 +22,7 @@ export function renderGameList(games) {
     `;
 
     div.addEventListener("click", () => {
-      goToGameDetails(game.id);
+      window.location.href = "game_details/index.html?id=" + game.id;
     });
 
     container.appendChild(div);

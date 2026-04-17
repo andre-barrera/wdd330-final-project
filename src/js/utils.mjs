@@ -4,7 +4,28 @@ export function getFavorites() {
 
 export function saveFavorite(game) {
   const favs = getFavorites();
-  favs.push(game);
+
+  const favorite = {
+    id: game.id,
+    name: game.name,
+    image: game.background_image,
+    rating: game.rating,
+    addedAt: new Date().toISOString()
+  };
+
+  const exists = favs.some(f => f.id === favorite.id);
+
+  if (!exists) {
+    favs.push(favorite);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+  }
+}
+
+export function removeFavorite(id) {
+  let favs = getFavorites();
+
+  favs = favs.filter(f => f.id !== id);
+
   localStorage.setItem("favorites", JSON.stringify(favs));
 }
 

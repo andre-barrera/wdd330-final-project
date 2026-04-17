@@ -5,6 +5,7 @@
   <title>Game Hub</title>
   <link rel="stylesheet" href="/src/css/style.css">
 </head>
+
 <body>
 
 <div id="header"></div>
@@ -17,8 +18,8 @@
       <h2>Discover New Games</h2>
       <p>Find the best deals, reviews, and ratings in one place.</p>
       <div class="hero-buttons">
-        <button>Explore</button>
-        <button>Top Rated</button>
+        <button type="button">Explore</button>
+        <button type="button">Top Rated</button>
       </div>
     </div>
   </div>
@@ -26,22 +27,34 @@
 
 <section class="featured">
   <h2>Featured Games</h2>
-  <div class="featured-grid">
-    <div class="card glass"></div>
-    <div class="card glass"></div>
-    <div class="card glass"></div>
-  </div>
+  <div class="featured-grid"></div>
 </section>
 
 <section class="results-section">
   <h2>Search Results</h2>
+
+  <form class="controls" id="controlsForm">
+    <select id="sortSelect">
+      <option value="">Sort By</option>
+      <option value="rating">⭐ Rating</option>
+      <option value="name">🔤 Name</option>
+    </select>
+
+    <input 
+      type="text" 
+      id="filterInput" 
+      placeholder="Filter by name..." 
+    />
+  </form>
+
   <div id="results"></div>
 </section>
 
 <div class="favorites-link">
-  <a href="/src/favorites/index.html">⭐ View Favorites</a>
+  <a href="/favorites/index.html">⭐ View Favorites</a>
 </div>
 
-<script type="module" src="./src/js/main.js"></script>
+<script type="module" src="/src/js/main.js"></script>
+
 </body>
 </html>
