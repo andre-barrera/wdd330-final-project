@@ -7,5 +7,6 @@ const favorites = getFavorites();
 container.innerHTML = favorites.map(game => `
   <div>
     <h3>${game.name}</h3>
-    <img src="${game.background_image}" />
-  </div>`).join("");
+    <img src="${game.image || game.background_image || ""}" />
+  </div>
+`).join("");
